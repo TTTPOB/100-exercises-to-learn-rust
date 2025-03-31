@@ -31,6 +31,9 @@ impl TicketStore {
     pub fn add_ticket(&mut self, ticket: Ticket) {
         self.tickets.push(ticket);
     }
+    pub fn in_progress(&self) -> impl std::iter::Iterator<Item = &Ticket> {
+        self.tickets.iter().filter(|x|x.status==Status::InProgress)
+    }
 }
 
 #[cfg(test)]
