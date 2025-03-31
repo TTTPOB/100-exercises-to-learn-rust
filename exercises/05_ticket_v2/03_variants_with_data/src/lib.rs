@@ -38,7 +38,10 @@ impl Ticket {
         }
     }
     pub fn assigned_to(&self) -> &str {
-        todo!()
+        match &self.status {
+            Status::InProgress { assigned_to: x } => {x.as_str()},
+            _ => {panic!("Only `In-Progress` tickets can be assigned to someone")}
+        }
     }
 }
 
