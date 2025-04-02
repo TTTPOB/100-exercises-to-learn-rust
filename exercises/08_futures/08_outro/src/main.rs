@@ -99,22 +99,23 @@ async fn main() {
 mod tests {
     use super::*;
 
-    async fn setup_server(port: u16) -> String {
-        let addr = SocketAddr::from(([127, 0, 0, 1], port));
+    async fn setup_server() -> String {
+        let addr = SocketAddr::from(([127, 0, 0, 1], 0));
         let listener = tokio::net::TcpListener::bind(addr)
             .await
             .expect("Failed to bind TCP listener");
+        let used_addr = listener.local_addr().unwrap();
         let app = get_app();
         tokio::spawn(async move {
             axum::serve(listener, app.into_make_service())
                 .await
                 .unwrap();
         });
-        format!("http://{}", addr)
+        format!("http://{}", used_addr)
     }
     #[tokio::test]
     async fn test_create_get_ticket() {
-        let server_url = setup_server(7700).await;
+        let server_url = setup_server().await;
         let client = reqwest::Client::new();
         let ticket = Ticket::new(
             42.into(),
@@ -142,7 +143,7 @@ mod tests {
     }
     #[tokio::test]
     async fn test_patch_ticket(){
-        let server_url = setup_server(7701).await;
+        let server_url = setup_server().await;
         let client = reqwest::Client::new();
         let ticket = Ticket::new(
             42.into(),
