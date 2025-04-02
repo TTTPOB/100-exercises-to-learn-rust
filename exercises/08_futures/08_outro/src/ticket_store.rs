@@ -8,7 +8,7 @@ use crate::ticket;
 
 use super::ticket::{Ticket, TicketId, TicketPatch};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct TicketStore {
     tickets: Arc<RwLock<BTreeMap<TicketId, Ticket>>>,
 }
@@ -29,7 +29,7 @@ impl TicketStore {
     pub fn get(&self, id: TicketId) -> Option<Ticket> {
         self.tickets.read().get(&id).cloned()
     }
-    pub fn insert(&self, ticket: Ticket) {
+    pub fn insert(&self, ticket: Ticket){
         self.tickets.write().insert(ticket.id, ticket);
     }
     pub fn patch(&self, id: TicketId, p: TicketPatch) -> Result<(), PatchError> {
